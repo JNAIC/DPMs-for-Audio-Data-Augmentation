@@ -11,14 +11,34 @@ import torch
 import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
-from utils import US8K
+from dataclasses import dataclass
+
+@dataclass
+class TrainingConfig:
+    image_size = 224  # the generated image resolution
+    train_batch_size = 16
+    eval_batch_size = 16  # how many images to sample during evaluation
+    num_epochs = 500
+    gradient_accumulation_steps = 1
+    learning_rate = 1e-4
+    lr_warmup_steps = 500
+    save_image_epochs = 10
+    save_model_epochs = 30
+    mixed_precision = 'fp16'  # `no` for float32, `fp16` for automatic mixed precision
+    output_dir = 'ddpm-butterflies-128'  # the model namy locally and on the HF Hub
+
+    push_to_hub = False  # whether to upload the saved model to the HF Hub
+    hub_private_repo = False  
+    overwrite_output_dir = True  # overwrite the old model when re-running the notebook
+    seed = 0
+
+config = TrainingConfig()
 dataset1=US8K(transform_size=128,train=True,root="Preprocessing_us8k")
 dataset2=US8K(transform_size=128,train=True,root="Preprocessing_us8k_augmentation")
 urbansound8k=["air_conditioner","car_horn","children_playing","dog_bark","drilling","engine_idling","gun_shot","jackhammer","siren","street_music"]
 
 noise_scheduler=DPMSolverMultistepScheduler(num_train_timesteps=1000)
 noise_scheduler.set_timesteps(num_inference_steps=20)
-augmen=RandAugment()
 loss=nn.MSELoss()
 device='cuda'
 model = Unet_Conditional(labels_dim=10,dim=64).to(device)
