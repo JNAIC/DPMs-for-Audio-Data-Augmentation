@@ -35,7 +35,7 @@ for k in k_ranges:
     urbansound=["air_conditioner","car_horn","children_playing","dog_bark","drilling","engine_idling","gun_shot","jackhammer","siren","street_music"]
     #model=Unet_Conditional
     import random
-    name="./Diffusion_us8k_dim64/Diffusion_us8k_dim64_90augmentation_130.pt"#720'
+    name="./Diffusion_us8k_dim64/Diffusion_us8k_dim64_90augmentation_3500.pt"#720'
     #name="./Diffusion_us8k_dim64/Diffusion_us8k_dim64_1275.pt"
     model=torch.load(name).to(device=device)
     model.eval()
